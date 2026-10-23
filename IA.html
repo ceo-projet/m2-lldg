@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Intelligence Artificielle - Guide Essentiel</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-500 selection:text-white">
+
+  <!-- Navigation -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 font-bold text-lg text-slate-900 tracking-tight">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+          <i data-lucide="cpu" class="w-5 h-5"></i>
+        </div>
+        <span>Comprendre l'IA</span>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+        <a href="#definition" class="hover:text-blue-600 transition-colors">Définition</a>
+        <a href="#branches" class="hover:text-blue-600 transition-colors">Sous-domaines</a>
+        <a href="#usages" class="hover:text-blue-600 transition-colors">Cas d'usage</a>
+        <a href="#quiz" class="hover:text-blue-600 transition-colors">Quiz</a>
+      </nav>
+
+      <a href="#usages" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all shadow-blue-500/10">
+        Explorer
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-28">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold mb-6 animate-pulse">
+        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+        Panorama & Découverte
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
+        L'Intelligence Artificielle <br class="hidden sm:inline">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
+          démystifiée simplement
+        </span>
+      </h1>
+      <p class="mt-6 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        Découvrez les principes fondamentaux, les différences entre Machine Learning et Deep Learning, et les applications concrètes qui transforment notre quotidien.
+      </p>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="#branches" class="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2">
+          <span>Découvrir l'architecture</span>
+          <i data-lucide="arrow-down" class="w-4 h-4"></i>
+        </a>
+        <a href="#quiz" class="px-6 py-3 rounded-xl bg-white text-slate-700 font-medium hover:bg-slate-100 border border-slate-200 transition-all">
+          Tester ses connaissances
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Définition -->
+  <section id="definition" class="py-16 bg-white border-y border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Concept clé</span>
+          <h2 class="text-3xl font-bold text-slate-900 mt-2 mb-4">Qu'est-ce que l'IA ?</h2>
+          <p class="text-slate-600 leading-relaxed mb-4">
+            L'<strong>Intelligence Artificielle (IA)</strong> désigne l'ensemble des théories et techniques mises en œuvre en vue de réaliser des machines capables de simuler l'intelligence humaine.
+          </p>
+          <p class="text-slate-600 leading-relaxed">
+            Elle englobe le raisonnement, la résolution de problèmes, la compréhension du langage naturel, la reconnaissance visuelle et la capacité d'apprentissage continu à partir de données.
+          </p>
+
+          <div class="mt-6 grid grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-2xl font-bold text-blue-600">IA Faible</div>
+              <p class="text-xs text-slate-500 mt-1">Spécialisée sur une tâche précise (ex: traduction, reconnaissance faciale).</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-2xl font-bold text-indigo-600">IA Générale</div>
+              <p class="text-xs text-slate-500 mt-1">Hypothétique : capable de comprendre et d'apprendre toute tâche intellectuelle humaine.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50/50 p-8 rounded-3xl border border-blue-100 relative">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-blue-600 rounded-xl text-white shadow-md">
+              <i data-lucide="layers" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900">Les Poupées Russes de l'IA</h3>
+              <p class="text-xs text-slate-500">Comprendre l'imbrication des technologies</p>
+            </div>
+          </div>
+
+          <!-- Schéma imbriqué -->
+          <div class="space-y-3">
+            <div class="p-4 rounded-2xl bg-white border border-blue-200 shadow-sm">
+              <div class="text-xs font-bold text-blue-700 uppercase">1. Intelligence Artificielle (IA)</div>
+              <p class="text-xs text-slate-600 mt-0.5">Le concept global d'imitation de l'intelligence.</p>
+              
+              <div class="mt-3 p-3 rounded-xl bg-blue-50/70 border border-blue-200/80">
+                <div class="text-xs font-bold text-indigo-700 uppercase">2. Machine Learning (ML)</div>
+                <p class="text-xs text-slate-600 mt-0.5">L'apprentissage automatique à partir de modèles statistiques.</p>
+                
+                <div class="mt-3 p-2.5 rounded-lg bg-indigo-100/70 border border-indigo-200 text-xs">
+                  <span class="font-bold text-purple-700 uppercase">3. Deep Learning (DL)</span>
+                  <p class="text-slate-600 mt-0.5">Réseaux de neurones profonds pour données massives et complexes.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Branches / Sous-domaines -->
+  <section id="branches" class="py-16 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Technologie</span>
+        <h2 class="text-3xl font-bold text-slate-900 mt-2">Machine Learning vs Deep Learning</h2>
+        <p class="text-slate-600 mt-3 text-sm sm:text-base">
+          Deux paradigmes d'apprentissage qui se complètent selon la complexité et le volume de données disponibles.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Machine Learning Card -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6">
+            <i data-lucide="git-branch" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Machine Learning (ML)</h3>
+          <p class="text-sm text-slate-500 mt-1">Apprentissage Automatique</p>
+          <p class="text-slate-600 text-sm mt-4 leading-relaxed">
+            Plutôt que d'être explicitement programmés pour chaque cas, les algorithmes de Machine Learning analysent des exemples (jeux de données) pour identifier des modèles et prédire des tendances.
+          </p>
+          
+          <div class="mt-6 space-y-2 border-t border-slate-100 pt-4">
+            <div class="flex items-start gap-2 text-sm text-slate-700">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
+              <span>Idéal pour les données tabulaires (Excel, bases SQL).</span>
+            </div>
+            <div class="flex items-start gap-2 text-sm text-slate-700">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
+              <span>Nécessite souvent l'intervention humaine pour sélectionner les variables (Feature Engineering).</span>
+            </div>
+            <div class="flex items-start gap-2 text-sm text-slate-700">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
+              <span>Algorithmes : Régression linéaire, Arbres de décision, Forêts aléatoires.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deep Learning Card -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6">
+            <i data-lucide="network" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Deep Learning (DL)</h3>
+          <p class="text-sm text-slate-500 mt-1">Apprentissage Profond</p>
+          <p class="text-slate-600 text-sm mt-4 leading-relaxed">
+            Inspiré du fonctionnement des neurones biologiques, le Deep Learning utilise des réseaux à plusieurs couches capables d'extraire par eux-mêmes des caractéristiques abstraites sans guide humain préalable.
+          </p>
+          
+          <div class="mt-6 space-y-2 border-t border-slate-100 pt-4">
+            <div class="flex items-start gap-2 text-sm text-slate-700">
+              <i data-lucide="check-circle" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+              <span>Excellence dans les données non structurées (images, audio, texte brut).</span>
+            </div>
+            <div class="flex items-start gap-2 text-sm text-slate-700">
+              <i data-lucide="check-circle" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+              <span>Nécessite une grande puissance de calcul (cartes graphiques / GPU) et des volumes massifs de données.</span>
+            </div>
+            <div class="flex items-start gap-2 text-sm text-slate-700">
+              <i data-lucide="check-circle" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+              <span>Architecture : Transformers (LLM comme GPT), CNN, RNN.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cas d'usage -->
+  <section id="usages" class="py-16 bg-white border-y border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Impact Réel</span>
+        <h2 class="text-3xl font-bold text-slate-900 mt-2">Cas d'usage concrets</h2>
+        <p class="text-slate-600 mt-3 text-sm sm:text-base">
+          L'IA transforme déjà les industries en automatisant les processus complexes et en accélérant la prise de décision.
+        </p>
+      </div>
+
+      <!-- Onglets interactifs -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" id="categoryTabs">
+        <button onclick="filterUsage('all')" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900 text-white" data-cat="all">Tous</button>
+        <button onclick="filterUsage('sante')" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="sante">Santé</button>
+        <button onclick="filterUsage('finance')" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="finance">Finance</button>
+        <button onclick="filterUsage('transports')" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="transports">Transports</button>
+        <button onclick="filterUsage('creation')" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="creation">Génération & Médias</button>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="usageCards">
+        <!-- Carte 1 -->
+        <div class="usage-card p-6 rounded-2xl bg-slate-50 border border-slate-200/70 hover:border-blue-300 transition-all" data-category="sante">
+          <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+            <i data-lucide="activity" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">Diagnostic Précédent</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Détection précoce de tumeurs et anomalies sur radiographies et IRM avec une précision égale ou supérieure aux spécialistes.
+          </p>
+        </div>
+
+        <!-- Carte 2 -->
+        <div class="usage-card p-6 rounded-2xl bg-slate-50 border border-slate-200/70 hover:border-blue-300 transition-all" data-category="finance">
+          <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center mb-4">
+            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">Détection de Fraude</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Analyse instantanée de millions de transactions bancaires pour bloquer les tentatives d'usurpation et transactions suspectes.
+          </p>
+        </div>
+
+        <!-- Carte 3 -->
+        <div class="usage-card p-6 rounded-2xl bg-slate-50 border border-slate-200/70 hover:border-blue-300 transition-all" data-category="transports">
+          <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
+            <i data-lucide="navigation" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">Véhicules Autonomes</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Vision par ordinateur et fusion de capteurs (LiDAR, caméras) permettant le guidage en temps réel et l'évitement d'obstacles.
+          </p>
+        </div>
+
+        <!-- Carte 4 -->
+        <div class="usage-card p-6 rounded-2xl bg-slate-50 border border-slate-200/70 hover:border-blue-300 transition-all" data-category="creation">
+          <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">IA Générative</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Rédaction assistée, génération d'illustrations, aide au développement de code logiciel et traduction multilingue instantanée.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz Interactif -->
+  <section id="quiz" class="py-16 bg-slate-50">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm text-center">
+        <div class="inline-flex p-3 rounded-2xl bg-blue-50 text-blue-600 mb-4">
+          <i data-lucide="help-circle" class="w-6 h-6"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900">Quiz éclair : Avez-vous retenu l'essentiel ?</h2>
+        <p class="text-sm text-slate-500 mt-1 mb-6">Testez vos connaissances en une question simple.</p>
+
+        <div class="text-left bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+          <p class="font-medium text-slate-800 text-sm sm:text-base">
+            Quelle technologie utilise des réseaux de neurones profonds pour apprendre directement à partir de données brutes ?
+          </p>
+          
+          <div class="mt-4 space-y-2">
+            <button onclick="checkQuiz(0)" class="quiz-btn w-full text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs sm:text-sm text-slate-700 transition flex items-center justify-between">
+              <span>A. Une simple base de données SQL</span>
+              <span class="indicator font-bold"></span>
+            </button>
+            <button onclick="checkQuiz(1)" class="quiz-btn w-full text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs sm:text-sm text-slate-700 transition flex items-center justify-between">
+              <span>B. Le Deep Learning</span>
+              <span class="indicator font-bold"></span>
+            </button>
+            <button onclick="checkQuiz(2)" class="quiz-btn w-full text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs sm:text-sm text-slate-700 transition flex items-center justify-between">
+              <span>C. La feuille de calcul Excel</span>
+              <span class="indicator font-bold"></span>
+            </button>
+          </div>
+        </div>
+
+        <div id="quizResult" class="hidden p-3 rounded-lg text-xs sm:text-sm font-medium"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>© 2026 Panorama IA. Code propre & prêt à l'emploi.</div>
+      <div class="flex gap-4">
+        <a href="#definition" class="hover:text-slate-800">Haut de page</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script d'interactivité -->
+  <script>
+    // Initialisation des icônes Lucide
+    lucide.createIcons();
+
+    // Filtrage des cas d'usage
+    function filterUsage(category) {
+      // Boutons
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        if(btn.dataset.cat === category) {
+          btn.className = 'tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900 text-white';
+        } else {
+          btn.className = 'tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200';
+        }
+      });
+
+      // Cartes
+      const cards = document.querySelectorAll('.usage-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Gestion du Quiz
+    function checkQuiz(selectedIndex) {
+      const resultBox = document.getElementById('quizResult');
+      const buttons = document.querySelectorAll('.quiz-btn');
+      
+      buttons.forEach(btn => {
+        btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50');
+      });
+
+      if (selectedIndex === 1) {
+        buttons[1].classList.add('border-emerald-500', 'bg-emerald-50');
+        resultBox.className = 'p-3 rounded-lg text-xs sm:text-sm font-medium bg-emerald-100 text-emerald-800 block';
+        resultBox.innerText = 'Exact ! Le Deep Learning repose sur des réseaux de neurones profonds.';
+      } else {
+        buttons[selectedIndex].classList.add('border-rose-500', 'bg-rose-50');
+        resultBox.className = 'p-3 rounded-lg text-xs sm:text-sm font-medium bg-rose-100 text-rose-800 block';
+        resultBox.innerText = 'Ce n\'est pas tout à fait ça. La bonne réponse est le Deep Learning.';
+      }
+    }
+  </script>
+</body>
+</html>
