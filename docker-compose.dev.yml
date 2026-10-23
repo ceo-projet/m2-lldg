@@ -1,0 +1,15 @@
+# Environnement de développement : http://localhost:8081
+# Le dossier site/ est monté en lecture seule : une modification est visible au rechargement.
+services:
+  web:
+    build:
+      context: .
+      args:
+        VERSION: ${LLDG_VERSION}
+    container_name: lldg-dev
+    env_file: env/dev.env
+    ports:
+      - "8081:80"
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+    restart: "no"

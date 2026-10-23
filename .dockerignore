@@ -1,0 +1,16 @@
+# Seuls le dossier site/ et le template Nginx entrent dans l'image.
+.git
+.github
+.gitignore
+.gitattributes
+.vscode
+.env
+env
+tests
+scripts
+livraison
+*.md
+Jenkinsfile
+docker-compose*.yml
+Dockerfile
+.dockerignore

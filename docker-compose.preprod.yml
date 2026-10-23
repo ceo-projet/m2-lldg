@@ -1,0 +1,9 @@
+# Environnement de recette : http://localhost:8082
+# Utilise l'image déjà construite, sans la reconstruire.
+services:
+  web:
+    container_name: lldg-preprod
+    env_file: env/preprod.env
+    ports:
+      - "8082:80"
+    restart: unless-stopped
