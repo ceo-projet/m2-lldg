@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101014">
+<title>MINUIT — Un petit ailleurs</title>
+<style>
+:root{--bg:#101014;--ink:#f7f3ee;--muted:#aaa5b2;--pink:#ff7b9c;--violet:#a78bfa;--line:#ffffff20}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;z-index:5;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
+a{color:inherit;text-decoration:none}.nav{height:84px;padding:0 7vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative;z-index:2}.logo{font-weight:900;letter-spacing:.24em;font-size:14px}.logo span{color:var(--pink)}.navlinks{display:flex;gap:30px;color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}.navlinks a:hover{color:white}.pill{border:1px solid #ffffff40;padding:12px 17px;border-radius:99px;font-size:12px}
+.hero{min-height:calc(100vh - 84px);padding:9vh 7vw 8vh;position:relative;display:flex;align-items:center;overflow:hidden}.hero-copy{position:relative;z-index:1;max-width:730px}.eyebrow{color:var(--pink);font-size:11px;letter-spacing:.28em;text-transform:uppercase;display:flex;align-items:center;gap:12px}.eyebrow:before{content:"";width:32px;height:1px;background:currentColor}.hero h1{font-size:clamp(58px,10vw,144px);line-height:.88;letter-spacing:-.085em;margin:28px 0 30px;font-weight:750}.hero h1 em{font-family:Georgia,serif;font-weight:400;color:var(--pink);letter-spacing:-.07em}.hero p{max-width:410px;color:#c0bac7;font-size:16px;line-height:1.8}.actions{display:flex;align-items:center;gap:22px;margin-top:35px;flex-wrap:wrap}.primary{display:inline-flex;align-items:center;gap:16px;background:var(--ink);color:#151419;padding:16px 22px;border-radius:3px;font-size:12px;font-weight:800;transition:.25s}.primary:hover{transform:translateY(-3px);background:var(--pink)}.textlink{font-size:12px;color:#d5cfda}.orbital{position:absolute;width:min(52vw,670px);aspect-ratio:1;right:2vw;top:50%;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffb2c2 0,#ee6f99 13%,#7c4bb4 36%,#252047 57%,#101014 72%);filter:saturate(.92);box-shadow:inset -40px -30px 100px #05050b,0 0 130px #9a4cae20;animation:float 8s ease-in-out infinite}.orbital:before,.orbital:after{content:"";position:absolute;inset:-8%;border:1px solid #ffffff35;border-radius:50%;transform:rotate(-28deg) scaleY(.28)}.orbital:after{inset:-17%;transform:rotate(30deg) scaleY(.4);border-color:#ff7b9c4d}.orbital .moon{position:absolute;width:17%;aspect-ratio:1;right:12%;top:20%;background:#f5d8d7;border-radius:50%;box-shadow:0 0 55px #ffb1d4aa}.star{position:absolute;width:4px;height:4px;background:white;border-radius:50%;box-shadow:0 0 12px white;animation:twinkle 3s infinite alternate}.s1{top:20%;right:17%}.s2{top:67%;right:42%;animation-delay:1s}.s3{top:31%;right:6%;animation-delay:1.7s}.s4{top:79%;right:15%;animation-delay:.6s}
+.side-note{position:absolute;right:7vw;bottom:7vh;writing-mode:vertical-rl;color:#8e8797;letter-spacing:.2em;font-size:10px}.scroll{position:absolute;bottom:7vh;left:7vw;color:#8e8797;font-size:10px;letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:14px}.scroll:before{content:"";height:38px;width:1px;background:var(--pink)}
+section{padding:110px 7vw}.section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:48px}.section-head h2{font-size:clamp(36px,5vw,68px);letter-spacing:-.065em;line-height:1;margin:15px 0 0}.section-head p{max-width:290px;color:var(--muted);line-height:1.7;font-size:13px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{min-height:300px;border:1px solid var(--line);padding:28px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;transition:.3s;background:linear-gradient(140deg,#ffffff08,transparent 60%)}.card:hover{border-color:#ff7b9c90;transform:translateY(-5px)}.card-number{color:var(--pink);font-size:11px;letter-spacing:.18em}.card h3{font-size:28px;letter-spacing:-.05em;margin:0 0 12px}.card p{font-size:13px;line-height:1.7;color:var(--muted);max-width:270px}.symbol{position:absolute;right:25px;top:40px;font-size:68px;color:#ffffff14;transition:.4s}.card:hover .symbol{color:#ff7b9c40;transform:rotate(12deg) scale(1.1)}
+.quote{padding:110px 7vw;background:#17151d;text-align:center}.quote .mark{font:90px Georgia;color:var(--pink);line-height:.8}.quote blockquote{font:clamp(26px,4.5vw,55px)/1.25 Georgia,serif;max-width:900px;margin:24px auto 28px;letter-spacing:-.03em}.quote small{color:var(--muted);font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+.contact{display:flex;justify-content:space-between;align-items:center;gap:35px;flex-wrap:wrap}.contact h2{font-size:clamp(42px,7vw,90px);line-height:.95;letter-spacing:-.08em;margin:18px 0}.contact h2 em{font-family:Georgia,serif;color:var(--pink);font-weight:400}.contact .primary{background:var(--pink)}footer{padding:26px 7vw;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;color:#827c8b;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+#sparkles{position:fixed;inset:0;pointer-events:none;z-index:10}.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);padding:14px 20px;background:#f7f3ee;color:#17151d;font-size:13px;opacity:0;transition:.3s;z-index:20;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes float{0%,100%{transform:translateY(-50%) rotate(-4deg)}50%{transform:translateY(calc(-50% - 16px)) rotate(3deg)}}@keyframes twinkle{from{opacity:.2;transform:scale(.7)}to{opacity:1;transform:scale(1.5)}}
+@media(max-width:800px){.nav{padding:0 6vw}.navlinks{display:none}.hero{padding:90px 6vw 120px;align-items:flex-start;min-height:850px}.orbital{width:75vw;right:-12vw;top:auto;bottom:2%;transform:none;opacity:.75}.hero-copy{padding-top:4vh}.hero h1{font-size:clamp(62px,15vw,100px)}.side-note{right:6vw;bottom:4vh}.scroll{left:6vw;bottom:4vh}.cards{grid-template-columns:1fr}.card{min-height:240px}section,.quote{padding:80px 6vw}.section-head{align-items:flex-start;flex-direction:column}.contact{align-items:flex-start}footer{padding:24px 6vw}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="sparkles"></canvas>
+<nav class="nav">
+  <a class="logo" href="#top">MINUIT<span>®</span></a>
+  <div class="navlinks"><a href="#univers">L'univers</a><a href="#manifeste">Le manifeste</a><a href="#contact">La suite</a></div>
+  <a class="pill" href="#contact">Entrer dans le rêve ↗</a>
+</nav>
+<main id="top">
+  <header class="hero">
+    <div class="orbital" aria-hidden="true"><div class="moon"></div><i class="star s1"></i><i class="star s2"></i><i class="star s3"></i><i class="star s4"></i></div>
+    <div class="hero-copy">
+      <div class="eyebrow">Un petit ailleurs, juste pour toi</div>
+      <h1>Et si on<br>changeait<br>de <em>lune ?</em></h1>
+      <p>Bienvenue dans un coin d'internet qui ne sert à rien. Et c'est précisément pour ça qu'il fait du bien.</p>
+      <div class="actions"><a class="primary" href="#univers">Explorer l'inconnu <span>↘</span></a><a class="textlink" href="#manifeste">Prendre une grande inspiration&nbsp; →</a></div>
+    </div>
+    <div class="scroll">Fais défiler doucement</div><div class="side-note">ÉDITION NOCTURNE — Nº 001</div>
+  </header>
+  <section id="univers">
+    <div class="section-head"><div><div class="eyebrow">Trois portes, zéro obligation</div><h2>Choisis ton<br>petit détour.</h2></div><p>Il n'y a pas de bonne façon d'être ici. Clique, explore, ou reste simplement un instant.</p></div>
+    <div class="cards">
+      <a class="card" href="#manifeste"><span class="card-number">01 / RESPIRER</span><span class="symbol">☾</span><div><h3>Le calme étrange</h3><p>Pour les jours où le monde parle trop fort. Ici, rien ne presse.</p></div></a>
+      <a class="card" href="#contact"><span class="card-number">02 / IMAGINER</span><span class="symbol">✳</span><div><h3>Les idées folles</h3><p>Les idées qui n'ont pas encore de nom sont souvent les plus belles.</p></div></a>
+      <a class="card" href="#" id="surprise"><span class="card-number">03 / SE SURPRENDRE</span><span class="symbol">✧</span><div><h3>La boîte à hasard</h3><p>Un clic, une petite étincelle. Parce que pourquoi pas ?</p></div></a>
+    </div>
+  </section>
+  <section class="quote" id="manifeste"><div class="mark">“</div><blockquote>Tu n'as pas besoin de transformer chaque instant en quelque chose d'utile.</blockquote><small>Petit rappel de l'univers · à garder près du cœur</small></section>
+  <section class="contact" id="contact"><div><div class="eyebrow">La suite n'est pas écrite</div><h2>Garde un peu<br>de place pour<br><em>la magie.</em></h2></div><a class="primary" href="#top" id="backtop">Recommencer le voyage ↗</a></section>
+</main>
+<footer><span>© MINUIT STUDIO — FAIT AVEC UN PEU DE MAGIE</span><span>Internet peut aussi être doux.</span><span>FR · 2026</span></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const messages=[
+  "Rappel du jour : tu as le droit de recommencer.",
+  "Quelque part, quelqu'un rit grâce à une chose que tu as dite.",
+  "Bois un verre d'eau. C'est ton petit objectif secret.",
+  "Tu es littéralement fait·e de poussière d'étoiles. Pas mal, non ?",
+  "Envoie un message à quelqu'un qui te fait du bien.",
+  "Tu n'es pas en retard sur une vie qui n'appartient qu'à toi.",
+  "Les meilleures choses commencent parfois par « et si… »",
+  "Détends la mâchoire. Baisse les épaules. Respire."
+];
+const toast=document.getElementById('toast');let toastTimer;
+document.getElementById('surprise').addEventListener('click',e=>{e.preventDefault();toast.textContent=messages[Math.floor(Math.random()*messages.length)];toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3600);});
+document.getElementById('backtop').addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});
+const canvas=document.getElementById('sparkles'),ctx=canvas.getContext('2d');let w,h,stars=[];
+function resize(){w=canvas.width=innerWidth*devicePixelRatio;h=canvas.height=innerHeight*devicePixelRatio;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';stars=Array.from({length:Math.min(100,Math.floor(innerWidth/12))},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.4+.3,a:Math.random(),s:Math.random()*.008+.002}));}
+function draw(){ctx.clearRect(0,0,w,h);for(const s of stars){s.a+=s.s;if(s.a>1||s.a<0)s.s*=-1;ctx.globalAlpha=Math.max(.08,Math.min(.65,s.a));ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x,s.y,s.r*devicePixelRatio,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;requestAnimationFrame(draw)}
+addEventListener('resize',resize);resize();draw();
+</script>
+</body>
+</html>
