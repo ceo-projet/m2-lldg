@@ -1,0 +1,30 @@
+# Configuration Nginx du site LLDG.
+# Au démarrage, l'image officielle remplace ${APP_ENV}, ${APP_VERSION} et ${APP_BANNER}
+# par les variables d'environnement du conteneur, puis écrit /etc/nginx/conf.d/default.conf.
+server {
+    listen       80;
+    server_name  _;
+
+    root   /usr/share/nginx/html;
+    index  index.html;
+
+    # Identification de l'environnement et de la version
+    add_header X-Environment "${APP_ENV}" always;
+    add_header X-App-Version "${APP_VERSION}" always;
+
+    # Bandeau d'environnement inséré avant </body> (vide en production)
+    sub_filter '</body>' '${APP_BANNER}</body>';
+    sub_filter_once on;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Ressources statiques mises en cache par le navigateur
+    location ~* \.(css|svg|png|jpg|jpeg|webp|ico)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+        add_header X-Environment "${APP_ENV}" always;
+        add_header X-App-Version "${APP_VERSION}" always;
+    }
+}

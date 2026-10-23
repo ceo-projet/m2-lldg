@@ -1,0 +1,17 @@
+# Relecteurs désignés automatiquement sur les pull requests.
+# Pris en compte quand la règle « Require review from Code Owners » est activée.
+# @ceo-projet/dev et @ceo-projet/ops sont des équipes : cela suppose que ceo-projet est une
+# organisation GitHub avec les équipes dev et ops. Si ceo-projet est un compte personnel,
+# remplacer par des identifiants d'utilisateurs, par exemple @samuel-beliink.
+
+# Par défaut : l'équipe Dev
+*                         @ceo-projet/dev
+
+# Infrastructure et pipeline : l'équipe Ops
+Dockerfile                @ceo-projet/ops
+.dockerignore             @ceo-projet/ops
+docker-compose*.yml       @ceo-projet/ops
+/docker/                  @ceo-projet/ops
+/env/                     @ceo-projet/ops
+Jenkinsfile               @ceo-projet/ops
+/scripts/                 @ceo-projet/ops

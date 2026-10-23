@@ -1,0 +1,19 @@
+# Réglages personnels de l'éditeur
+.vscode/
+*.code-workspace
+
+# Livrables client (archives d'image, fichiers générés)
+livraison/
+
+# Journaux et fichiers temporaires
+*.log
+*.tmp
+
+# Réglages locaux et secrets : ne jamais les publier
+.env.local
+*.local.env
+
+# Fichiers système
+Thumbs.db
+desktop.ini
+.DS_Store

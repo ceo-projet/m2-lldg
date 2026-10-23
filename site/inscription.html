@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inscription – Les Loups du Game</title>
+  <meta name="description" content="Réservez le créneau de votre équipe pour l'escape game d'Halloween.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="entete">
+    <div class="conteneur">
+      <a class="marque" href="index.html"><img src="img/logo.svg" alt="" width="40" height="40"> Les Loups du Game</a>
+      <nav aria-label="Navigation principale">
+        <ul class="nav">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="programme.html">Programme</a></li>
+        <li><a href="inscription.html" aria-current="page">Inscription</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="titre-page">
+      <div class="conteneur">
+        <h1>Inscription</h1>
+        <p>Réservez le créneau de votre équipe. Nous vous confirmons la réservation par courriel.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="conteneur">
+        <form class="formulaire" action="#" method="post">
+          <label>Nom de l'équipe
+            <input type="text" name="equipe" required maxlength="40">
+          </label>
+          <label>Courriel du capitaine
+            <input type="email" name="courriel" required>
+          </label>
+          <label>Nombre de joueurs
+            <select name="joueurs" required>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+          </label>
+          <label>Soirée
+            <select name="soiree" required>
+              <option value="2026-10-30">Vendredi 30 octobre</option>
+              <option value="2026-10-31">Samedi 31 octobre</option>
+            </select>
+          </label>
+          <label>Créneau de départ
+            <select name="creneau" required>
+              <option>18 h 30</option>
+              <option>19 h 15</option>
+              <option>20 h 00</option>
+              <option>20 h 45</option>
+            </select>
+          </label>
+          <label>Message (facultatif)
+            <textarea name="message" rows="4"></textarea>
+          </label>
+          <p class="note">Formulaire de démonstration : aucune donnée n'est envoyée.</p>
+          <button class="bouton" type="submit">Envoyer la demande</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pied">
+    <div class="conteneur">
+      <p>© 2026 Les Loups du Game – association culturelle, Marseille</p>
+      <p><a href="contact.html">Nous contacter</a></p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Socle commun aux trois environnements.
+# Toujours combiné avec un fichier d'environnement, par exemple :
+#   docker compose -p lldg-preprod -f docker-compose.yml -f docker-compose.preprod.yml up -d
+services:
+  web:
+    image: lldg:${LLDG_VERSION:?Definir LLDG_VERSION dans le fichier .env}

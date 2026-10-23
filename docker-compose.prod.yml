@@ -1,0 +1,18 @@
+# Environnement de production (livrable client) : http://localhost:8080
+services:
+  web:
+    container_name: lldg-prod
+    env_file: env/prod.env
+    ports:
+      - "8080:80"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
