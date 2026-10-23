@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JDR Battlemap — V3</title>
+<style>
+:root{--bg:#17131f;--panel:#211b2c;--panel2:#2a2238;--gold:#d6ad5b;--text:#f4efe6;--muted:#aaa0b4;--red:#d9534f;--blue:#4e8fe7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,sans-serif;height:100vh;overflow:hidden}
+header{height:58px;background:#100d15;border-bottom:1px solid #3d324d;display:flex;align-items:center;padding:0 14px;gap:8px}
+h1{font-size:18px;margin:0;color:var(--gold)}.spacer{flex:1}
+button,input,select{font:inherit}
+button,select{border:1px solid #514363;background:var(--panel2);color:var(--text);border-radius:7px;padding:7px 10px;cursor:pointer}
+button:hover,select:hover{border-color:var(--gold)}
+.layout{height:calc(100vh - 58px);display:grid;grid-template-columns:260px 1fr 350px}
+.sidebar{background:var(--panel);padding:14px;overflow:auto;border-right:1px solid #3d324d}
+.right{border-left:1px solid #3d324d;border-right:0}
+.section{margin-bottom:18px}.section h2{font-size:13px;text-transform:uppercase;color:var(--muted);margin:0 0 9px}
+.drop{display:block;border:1px dashed #635476;border-radius:9px;padding:12px;text-align:center;color:var(--muted);cursor:pointer;font-size:13px}
+.drop:hover{border-color:var(--gold);color:var(--text)}
+input[type=file]{display:none}
+.row{display:flex;gap:7px;margin:7px 0}.row>*{flex:1;min-width:0}
+label{font-size:12px;color:var(--muted);display:block;margin-top:7px}
+input[type=text],input[type=number]{width:100%;background:#17131f;border:1px solid #514363;color:var(--text);padding:7px;border-radius:6px}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+#saveState{font-size:12px;color:#8fd19e;white-space:nowrap}
+.on{border-color:var(--gold)!important;color:var(--gold)}
+#stage{position:relative;overflow:hidden;background:#0d0b10;cursor:grab;touch-action:none}
+#stage.dragging{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;background:#1b1626;box-shadow:0 0 0 2px #3d324d}
+#world.hasMap{background:transparent;box-shadow:none}
+#map{position:absolute;inset:0;width:100%;height:100%;user-select:none;pointer-events:none;display:none}
+#world.hasMap #map{display:block}
+#world.grid::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;background-image:linear-gradient(#ffffff38 2px,transparent 2px),linear-gradient(90deg,#ffffff38 2px,transparent 2px);background-size:var(--cell) var(--cell)}
+#tokens{position:absolute;inset:0;z-index:2}
+.token{position:absolute;width:var(--cell);height:var(--cell);border-radius:10px;transform:translate(-50%,-50%);cursor:grab;border:3px solid var(--gold);box-shadow:0 4px 16px #000b;background:#30273d;touch-action:none}
+.token.en{border-color:var(--red)}
+.token.act{border-color:#fff;box-shadow:0 0 0 4px var(--gold),0 0 30px var(--gold)}
+.token img{width:100%;height:100%;object-fit:cover;border-radius:7px;display:block;pointer-events:none}
+.token .ini{display:flex;align-items:center;justify-content:center;height:100%;font-size:calc(var(--cell)*.5);color:var(--gold);font-weight:700}
+.token .name{position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 4px);white-space:nowrap;background:#100d15dd;padding:2px 8px;border-radius:5px;font-size:calc(var(--cell)*.19)}
+.token .hpmini{position:absolute;left:3px;right:3px;bottom:3px;height:calc(var(--cell)*.09);min-height:4px;background:#391b1b;border-radius:4px;overflow:hidden}
+.token .hpmini i{display:block;height:100%;background:var(--red)}
+.token .fxs{position:absolute;bottom:calc(100% + 2px);left:0;white-space:nowrap;font-size:calc(var(--cell)*.24)}
+.token .stt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--cell)*.55);background:#000a;border-radius:7px}
+.token.dead img{filter:grayscale(1)}
+.ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:3px dashed #d6ad5b99;background:#d6ad5b18;pointer-events:none;z-index:-1}
+.zoom{position:absolute;right:14px;bottom:14px;display:flex;gap:6px;z-index:10}
+.tabs{display:flex;gap:4px;margin-bottom:12px}.tabs button{flex:1;padding:7px 4px;font-size:13px}
+.pane[hidden]{display:none}
+.card{background:#2a2238;border:1px solid #514363;border-left:4px solid var(--gold);border-radius:9px;padding:10px;margin-bottom:9px}
+.card.en{border-left-color:var(--red)}
+.cardHead{display:flex;gap:9px;align-items:center}
+.avatar{width:50px;height:50px;border-radius:8px;object-fit:cover;background:#17131f;cursor:pointer;border:1px solid #514363;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px}
+.avatar:hover{border-color:var(--gold)}
+.cardHead input[type=text]{font-weight:600}
+.sub{display:flex;gap:6px;margin-top:4px;align-items:center}.sub select{flex:1;min-width:0;padding:3px 6px;font-size:12px}
+.tag{font-size:11px;color:var(--muted)}
+.stat{display:flex;align-items:center;gap:6px;margin-top:8px}.stat span{width:58px;font-size:12px;color:var(--muted)}
+.stat input{width:60px;padding:4px;text-align:center}.stat em{color:var(--muted);font-style:normal}
+.bar{height:9px;border-radius:5px;background:#17131f;overflow:hidden;margin:4px 0}
+.bar i{display:block;height:100%;transition:width .15s}.hp i{background:var(--red)}.mana i{background:var(--blue)}
+.btns,.ctrl{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:4px}
+.ctrl{grid-template-columns:repeat(3,1fr);margin-top:8px}
+.btns button,.ctrl button{padding:4px;font-size:12px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}.trio label{margin:0}.trio input{padding:4px;text-align:center}
+.card>select{width:100%;margin-top:8px;padding:5px}
+.fx{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}.fx button{padding:2px 5px;font-size:15px;opacity:.45}.fx button.on{opacity:1;background:#3b3050}
+.small,.empty{font-size:12px;color:var(--muted)}.empty{text-align:center;padding:18px 4px}
+.danger{border-color:#733a3a}
+h3{font-size:12px;color:var(--muted);text-transform:uppercase;margin:12px 0 6px}
+#pPrev{display:none;width:60px;height:60px;object-fit:cover;border-radius:8px;margin:0 auto 6px}
+.crow{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid #514363;border-radius:8px;margin-bottom:5px;background:#2a2238;cursor:pointer}
+.crow b{width:28px;text-align:center;color:var(--gold);font-size:17px}.crow.act{border-color:var(--gold);background:#3b3050}.crow.off{opacity:.45}
+.crow div{flex:1;min-width:0}
+#cInfo{font-size:20px;color:var(--gold);font-weight:700}
+.dice{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}.dice button{padding:12px;font-size:16px;font-weight:700}
+#dRes{text-align:center;font-size:44px;font-weight:800;color:var(--gold);min-height:56px}#dRes.crit{color:#6fdc8c}#dRes.fumble{color:var(--red)}
+.log{font-size:13px;padding:5px 0;border-bottom:1px solid #3d324d;display:flex;justify-content:space-between}.log b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+<h1>⚔ JDR Battlemap — V3</h1>
+<select id="camp" title="Campagne / partie"></select>
+<button id="cNew" title="Nouvelle campagne">＋</button><button id="cRen" title="Renommer">✎</button><button id="cDel" class="danger" title="Supprimer la campagne">🗑</button>
+<div class="spacer"></div>
+<span id="saveState">… Chargement</span>
+<button id="exportBtn">💾 Exporter</button><button id="importBtn">📂 Importer</button><input id="importFile" type="file" accept=".json,application/json">
+<button id="full">⛶</button>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<div class="section">
+<h2>Carte</h2>
+<select id="mapSel" style="width:100%"></select>
+<div class="row"><button id="mRen">Renommer</button><button id="mDel" class="danger">Supprimer</button></div>
+<label class="drop" for="mapFile">🗺️ Importer une carte<br><span class="small">remplit la carte vide, sinon en crée une nouvelle</span></label>
+<input id="mapFile" type="file" accept="image/*">
+<div class="row"><button id="resetView">Recentrer</button><button id="gridBtn">Grille : OFF</button></div>
+<button id="gather" style="width:100%" title="Déplace tous les joueurs sur la carte affichée">👥 Envoyer les joueurs ici</button>
+<label>Taille d'une case (px de la carte)</label><input id="cell" type="number" min="20" max="300" value="70">
+</div>
+<div class="section">
+<h2>Nouveau personnage</h2>
+<div class="row"><button id="tPj" class="on">🧙 Joueur</button><button id="tEn">👹 Ennemi</button></div>
+<label>Nom</label><input id="pName" type="text" placeholder="Ex. Aragorn">
+<div class="row"><div><label>PV max</label><input id="pHp" type="number" value="40" min="1"></div><div><label>Mana max</label><input id="pMana" type="number" value="20" min="0"></div></div>
+<div class="row"><div><label>🛡️ CA</label><input id="pCa" type="number" value="14" min="0"></div><div><label>🏃 Cases</label><input id="pMv" type="number" value="6" min="0"></div></div>
+<div id="qtyBox" hidden><label>Quantité (copies numérotées)</label><input id="pQty" type="number" value="1" min="1" max="20"></div>
+<label class="drop" for="pImg" style="margin-top:9px"><img id="pPrev" alt=""><span id="pImgText">🖼️ Choisir une image</span></label>
+<input id="pImg" type="file" accept="image/*">
+<button id="add" style="width:100%;margin-top:9px">＋ Ajouter</button>
+</div>
+</aside>
+
+<main id="stage">
+<div id="world"><img id="map" alt=""><div id="tokens"></div></div>
+<div class="zoom"><button id="minus">−</button><button id="plus">＋</button></div>
+</main>
+
+<aside class="sidebar right">
+<div class="tabs"><button data-tab="fiches" class="on">🧙 Fiches</button><button data-tab="combat">⚔️ Combat</button><button data-tab="des">🎲 Dés</button></div>
+<div id="tfiches" class="pane"><div id="list"></div></div>
+<div id="tcombat" class="pane" hidden>
+<div id="cInfo">Hors combat</div>
+<div class="row"><button id="cNext">▶ Démarrer</button><button id="cEnd">■ Fin</button></div>
+<button id="cAuto" style="width:100%">🎲 Initiative auto (d20)</button>
+<h3>Ordre des tours</h3><div id="cOrder"></div>
+</div>
+<div id="tdes" class="pane" hidden>
+<div class="row"><div><label>Nombre de dés</label><input id="dN" type="number" value="1" min="1" max="20"></div><div><label>Bonus</label><input id="dM" type="number" value="0"></div></div>
+<div class="dice"><button data-d="4">d4</button><button data-d="6">d6</button><button data-d="8">d8</button><button data-d="10">d10</button><button data-d="12">d12</button><button data-d="20">d20</button></div>
+<div id="dRes">—</div><div id="dDet" class="small" style="text-align:center"></div>
+<h3>Historique</h3><div id="dLog"></div>
+</div>
+</aside>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const FX=[['🤢','Empoisonné'],['💫','Étourdi'],['🔥','En feu'],['✨','Béni'],['😱','Effrayé'],['🧊','Paralysé'],['👻','Invisible'],['🛌','À terre'],['🎯','Concentré'],['🐌','Ralenti'],['🩸','Saigne']];
+const ST={ok:'',ko:'💤',dead:'☠️'},NUM=['hp','hpMax','mana','manaMax','ca','mv','init'];
+let D,C,V,db=null,urls={},pendingBlob=null,pendingURL=null,timer=null,drag=null,pan=null,newType='pj';
+
+/* ---------- IndexedDB ---------- */
+const openDB=()=>new Promise((ok,ko)=>{const r=indexedDB.open('jdr_battlemap',1);r.onupgradeneeded=()=>{r.result.createObjectStore('kv');r.result.createObjectStore('img')};r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)});
+const dbDo=(st,mode,fn)=>new Promise((ok,ko)=>{const t=db.transaction(st,mode),rq=fn(t.objectStore(st));t.oncomplete=()=>ok(rq&&rq.result);t.onerror=t.onabort=()=>ko(t.error)});
+const getImg=id=>dbDo('img','readonly',s=>s.get(id));
+async function storeImg(b,id=uid()){await dbDo('img','readwrite',s=>s.put(b,id));urls[id]=URL.createObjectURL(b);return id}
+async function delImg(id){if(!id)return;if(urls[id]){URL.revokeObjectURL(urls[id]);delete urls[id]}try{await dbDo('img','readwrite',s=>s.delete(id))}catch{}}
+async function loadURL(id){if(!id||urls[id])return;const b=await getImg(id);if(b)urls[id]=URL.createObjectURL(b)}
+async function wipeImages(){Object.values(urls).forEach(URL.revokeObjectURL);urls={};await dbDo('img','readwrite',s=>s.clear())}
+const imgIds=c=>[...c.maps.map(m=>m.imgId),...c.ents.map(e=>e.imgId)].filter(Boolean);
+
+/* ---------- Sauvegarde auto ---------- */
+function setStatus(t,ok=true){const e=$('#saveState');e.textContent=t;e.style.color=ok?'#8fd19e':'#ff8a80'}
+function saveSoon(){if(!db)return;setStatus('… Enregistrement');clearTimeout(timer);timer=setTimeout(saveNow,250)}
+async function saveNow(){if(!db)return;clearTimeout(timer);timer=null;try{await dbDo('kv','readwrite',s=>s.put(clone(D),'data'));setStatus('✔ Sauvegardé à '+new Date().toLocaleTimeString('fr-FR'))}catch{setStatus('⚠ Sauvegarde impossible',false)}}
+addEventListener('beforeunload',()=>{if(db&&timer)saveNow()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow()});
+
+/* ---------- Modèle ---------- */
+const newMap=(name,imgId,w,h)=>({id:uid(),name,imgId:imgId||null,w:w||2000,h:h||1400,zoom:1,panX:0,panY:0,grid:false,cell:70});
+function newCamp(name){const m=newMap('Carte 1');return{id:uid(),name,maps:[m],map:m.id,ents:[],turn:null,round:0,fight:false,log:[]}}
+const fromV2=o=>{const c=newCamp('Partie (V2)');Object.assign(c.maps[0],{imgId:o.mapId,w:o.mapW,h:o.mapH,zoom:o.zoom,panX:o.panX,panY:o.panY,grid:o.grid,cell:o.cell});c.ents=(o.players||[]).map(p=>({...p,t:'pj',ca:10,mv:6,init:null,st:'ok',fx:[],map:c.map}));return c};
+function setCur(id){D.cur=id;C=D.camps.find(c=>c.id===id);V=C.maps.find(m=>m.id===C.map)||C.maps[0];C.map=V.id}
+async function openCamp(id,fit){setCur(id);await Promise.all(imgIds(C).map(loadURL));C.ents.forEach(fix);renderAll();if(fit)fitView()}
+const ent=id=>C.ents.find(e=>e.id===id);
+function fix(e){e.hpMax=Math.max(1,Math.round(+e.hpMax)||1);e.manaMax=Math.max(0,Math.round(+e.manaMax)||0);e.hp=clamp(Math.round(+e.hp)||0,0,e.hpMax);e.mana=clamp(Math.round(+e.mana)||0,0,e.manaMax);e.ca=Math.max(0,Math.round(+e.ca)||0);e.mv=Math.max(0,Math.round(+e.mv)||0)}
+const order=()=>C.ents.filter(e=>e.init!==null&&e.init!==''&&!isNaN(e.init)).sort((a,b)=>b.init-a.init);
+
+/* ---------- Images ---------- */
+const imgSize=u=>new Promise((ok,ko)=>{const i=new Image();i.onload=()=>ok({w:i.naturalWidth,h:i.naturalHeight});i.onerror=ko;i.src=u});
+async function makeTokenBlob(f){const b=await createImageBitmap(f),s=Math.min(b.width,b.height),c=document.createElement('canvas');c.width=c.height=256;c.getContext('2d').drawImage(b,(b.width-s)/2,(b.height-s)/2,s,s,0,0,256,256);return new Promise((ok,ko)=>c.toBlob(x=>x?ok(x):ko(),'image/webp',.9))}
+
+/* ---------- Affichage carte ---------- */
+function applyMap(){
+ const w=$('#world'),m=$('#map'),u=urls[V.imgId]||'';
+ w.classList.toggle('hasMap',!!u);if(u){if(m.getAttribute('src')!==u)m.src=u}else m.removeAttribute('src');
+ w.style.width=V.w+'px';w.style.height=V.h+'px';w.style.setProperty('--cell',V.cell+'px');w.classList.toggle('grid',V.grid);
+ $('#gridBtn').textContent='Grille : '+(V.grid?'ON':'OFF');$('#cell').value=V.cell;
+}
+const applyView=()=>{$('#world').style.transform=`translate(${V.panX}px,${V.panY}px) scale(${V.zoom})`};
+function fitView(){const r=$('#stage').getBoundingClientRect();V.zoom=clamp(Math.min(r.width/V.w,r.height/V.h)*.95,.05,5);V.panX=(r.width-V.w*V.zoom)/2;V.panY=(r.height-V.h*V.zoom)/2;applyView();saveSoon()}
+function zoomAt(mx,my,f){const nz=clamp(V.zoom*f,.05,5),k=nz/V.zoom;V.panX=mx-(mx-V.panX)*k;V.panY=my-(my-V.panY)*k;V.zoom=nz;applyView();saveSoon()}
+function gotoMap(id){C.map=id;V=C.maps.find(m=>m.id===id);applyMap();applyView();renderTokens();renderTop();saveSoon()}
+function renderTop(){
+ $('#camp').innerHTML=D.camps.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');$('#camp').value=C.id;
+ $('#mapSel').innerHTML=C.maps.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');$('#mapSel').value=V.id;
+}
+function renderTokens(){
+ const box=$('#tokens');box.innerHTML='';
+ C.ents.filter(e=>e.map===V.id).forEach(e=>{
+  const t=document.createElement('div'),u=urls[e.imgId],act=C.fight&&C.turn===e.id;
+  t.className=`token ${e.t}${act?' act':''}${e.st==='dead'?' dead':''}`;t.style.left=e.x+'px';t.style.top=e.y+'px';
+  t.innerHTML=(act&&e.mv&&e.st==='ok'?`<div class="ring" style="width:${(2*e.mv+1)*V.cell}px;height:${(2*e.mv+1)*V.cell}px"></div>`:'')
+   +(u?`<img src="${u}" alt="">`:`<div class="ini">${esc((e.name||'?')[0].toUpperCase())}</div>`)
+   +(e.st!=='ok'?`<div class="stt">${ST[e.st]}</div>`:'')
+   +(e.fx.length?`<div class="fxs">${e.fx.join('')}</div>`:'')
+   +`<div class="name">${esc(e.name)}</div><div class="hpmini"><i style="width:${clamp(e.hp/e.hpMax*100,0,100)}%"></i></div>`;
+  t.addEventListener('pointerdown',ev=>{ev.stopPropagation();ev.preventDefault();drag={e,sx:ev.clientX,sy:ev.clientY,ox:e.x,oy:e.y};t.setPointerCapture(ev.pointerId)});
+  t.addEventListener('pointermove',ev=>{if(!drag||drag.e!==e)return;e.x=clamp(drag.ox+(ev.clientX-drag.sx)/V.zoom,0,V.w);e.y=clamp(drag.oy+(ev.clientY-drag.sy)/V.zoom,0,V.h);t.style.left=e.x+'px';t.style.top=e.y+'px'});
+  t.addEventListener('pointerup',()=>{if(drag){drag=null;saveSoon()}});
+  box.appendChild(t);
+ });
+}
+
+/* ---------- Fiches ---------- */
+const BT=k=>[-5,-1,1,5].map(d=>`<button data-k="${k}" data-d="${d}">${d>0?'+':'−'}${Math.abs(d)}</button>`).join('');
+function cardHTML(e){
+ const u=urls[e.imgId];
+ return `<div class="cardHead">${u?`<img class="avatar" data-act="avatar" title="Changer l'image" src="${u}" alt="">`:`<div class="avatar" data-act="avatar" title="Ajouter une image">🖼️</div>`}<input type="file" accept="image/*" data-f="avatarFile">
+ <div style="flex:1;min-width:0"><input type="text" data-f="name" value="${esc(e.name)}"><div class="sub"><span class="tag">${e.t==='pj'?'Joueur':'Ennemi'}</span><select data-f="map">${C.maps.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')}</select></div></div></div>
+ <div class="stat"><span>❤️ PV</span><input type="number" data-f="hp"><em>/</em><input type="number" data-f="hpMax"></div><div class="bar hp"><i></i></div><div class="btns">${BT('hp')}</div>
+ <div class="stat"><span>🔵 Mana</span><input type="number" data-f="mana"><em>/</em><input type="number" data-f="manaMax"></div><div class="bar mana"><i></i></div><div class="btns">${BT('mana')}</div>
+ <div class="trio"><label>🛡️ CA<input type="number" data-f="ca"></label><label>🏃 Cases<input type="number" data-f="mv"></label><label>⚔️ Init.<input type="number" data-f="init"></label></div>
+ <select data-f="st"><option value="ok">🟢 En forme</option><option value="ko">💤 Inconscient</option><option value="dead">☠️ Mort</option></select>
+ <div class="fx">${FX.map(([k,n])=>`<button data-fx="${k}" title="${n}">${k}</button>`).join('')}</div>
+ <div class="ctrl"><button data-act="heal">❤️ Soigner</button><button data-act="dup">⧉ Copier</button><button class="danger" data-act="del">Supprimer</button></div>`;
+}
+function refreshCard(e){
+ const c=document.querySelector(`[data-card="${e.id}"]`);if(!c)return;
+ NUM.forEach(f=>{const i=c.querySelector(`[data-f="${f}"]`);if(document.activeElement!==i)i.value=e[f]??''});
+ c.querySelector('.hp i').style.width=clamp(e.hp/e.hpMax*100,0,100)+'%';
+ c.querySelector('.mana i').style.width=(e.manaMax?clamp(e.mana/e.manaMax*100,0,100):0)+'%';
+ c.querySelector('[data-f="st"]').value=e.st;c.querySelector('[data-f="map"]').value=e.map;
+ c.querySelectorAll('[data-fx]').forEach(b=>b.classList.toggle('on',e.fx.includes(b.dataset.fx)));
+}
+function renderList(){
+ const l=$('#list');l.innerHTML='';
+ if(!C.ents.length){l.innerHTML='<div class="empty">Aucun personnage.<br>Crée joueurs et ennemis à gauche.</div>';return}
+ [['pj','Joueurs'],['en','Ennemis']].forEach(([t,title])=>{
+  const a=C.ents.filter(e=>e.t===t);if(!a.length)return;
+  l.insertAdjacentHTML('beforeend',`<h3>${title}</h3>`);
+  a.forEach(e=>{const c=document.createElement('div');c.className='card '+t;c.dataset.card=e.id;c.innerHTML=cardHTML(e);l.appendChild(c);refreshCard(e)});
+ });
+}
+function touch(e,auto=true){
+ fix(e);
+ if(auto){if(e.hp===0&&e.st==='ok')e.st=e.t==='pj'?'ko':'dead';else if(e.hp>0&&e.st==='ko')e.st='ok'}
+ refreshCard(e);renderTokens();renderCombat();saveSoon();
+}
+const findE=el=>{const c=el.closest('[data-card]');return c&&ent(c.dataset.card)};
+$('#list').addEventListener('click',async ev=>{
+ const b=ev.target.closest('[data-k],[data-act],[data-fx]');if(!b)return;const e=findE(b);if(!e)return;
+ if(b.dataset.k){e[b.dataset.k]+=+b.dataset.d;touch(e)}
+ else if(b.dataset.fx){const i=e.fx.indexOf(b.dataset.fx);i<0?e.fx.push(b.dataset.fx):e.fx.splice(i,1);touch(e,false)}
+ else if(b.dataset.act==='heal'){e.hp=e.hpMax;e.mana=e.manaMax;if(e.st==='ko')e.st='ok';touch(e,false)}
+ else if(b.dataset.act==='avatar')b.closest('.cardHead').querySelector('[data-f="avatarFile"]').click();
+ else if(b.dataset.act==='dup'){
+  const n={...clone(e),id:uid(),name:e.name+' (copie)',x:clamp(e.x+V.cell*.6,0,V.w),y:clamp(e.y+V.cell*.6,0,V.h),imgId:null};
+  if(e.imgId){const bl=await getImg(e.imgId);if(bl)n.imgId=await storeImg(bl)}
+  C.ents.push(n);renderList();renderTokens();renderCombat();saveNow();
+ }else if(b.dataset.act==='del'){
+  if(!confirm(`Supprimer ${e.name} ?`))return;
+  C.ents=C.ents.filter(x=>x!==e);if(C.turn===e.id)C.turn=null;await delImg(e.imgId);renderList();renderTokens();renderCombat();saveNow();
+ }
+});
+$('#list').addEventListener('input',ev=>{if(ev.target.dataset.f!=='name')return;const e=findE(ev.target);e.name=ev.target.value;renderTokens();renderCombat();saveSoon()});
+$('#list').addEventListener('change',async ev=>{
+ const f=ev.target.dataset.f,e=findE(ev.target),v=ev.target.value;if(!e||!f)return;
+ if(f==='avatarFile'){
+  const file=ev.target.files[0];ev.target.value='';if(!file)return;
+  try{const old=e.imgId;e.imgId=await storeImg(await makeTokenBlob(file));await delImg(old);const c=document.querySelector(`[data-card="${e.id}"]`);c.innerHTML=cardHTML(e);refreshCard(e);renderTokens();saveNow()}
+  catch{alert('Image illisible. Essaie un PNG, JPG ou WebP.')}
+ }else if(NUM.includes(f)){e[f]=f==='init'?(v===''?null:+v):v;touch(e);if(f!=='init')ev.target.value=e[f]}
+ else if(f==='st'){e.st=v;touch(e,false)}
+ else if(f==='map'){e.map=v;const m=C.maps.find(x=>x.id===v);e.x=clamp(e.x,0,m.w);e.y=clamp(e.y,0,m.h);renderTokens();saveSoon()}
+ else if(f==='name'){if(!e.name.trim()){e.name='Sans nom';ev.target.value=e.name;renderTokens();renderCombat()}saveSoon()}
+});
+
+/* ---------- Combat ---------- */
+function renderCombat(){
+ const a=order();
+ $('#cInfo').textContent=C.fight?`Round ${C.round}`:'Hors combat';$('#cNext').textContent=C.fight?'⏭ Tour suivant':'▶ Démarrer';
+ $('#cOrder').innerHTML=a.length?a.map(e=>`<div class="crow${e.id===C.turn&&C.fight?' act':''}${e.st!=='ok'?' off':''}" data-cid="${e.id}"><b>${e.init}</b><div>${e.t==='pj'?'🧙':'👹'} ${esc(e.name)} ${ST[e.st]} ${e.fx.join('')}<br><span class="small">${e.hp}/${e.hpMax} PV · 🛡️ ${e.ca} · 🏃 ${e.mv}</span></div></div>`).join('')
+  :'<div class="empty">Renseigne l\'initiative dans les fiches, ou lance « Initiative auto ».</div>';
+}
+function afterTurn(){const e=ent(C.turn);if(e&&e.map!==V.id)gotoMap(e.map);renderTokens();renderCombat();saveNow()}
+$('#cNext').onclick=()=>{
+ const a=order(),n=a.length;if(!n)return alert("Renseigne au moins une initiative.");
+ let i=C.fight?a.findIndex(e=>e.id===C.turn):-1;if(!C.fight){C.fight=true;C.round=1}
+ for(let k=1;k<=n;k++){const j=(i+k)%n;if(a[j].st==='ok'){if(i>=0&&j<=i)C.round++;C.turn=a[j].id;break}}
+ afterTurn();
+};
+$('#cEnd').onclick=()=>{C.fight=false;C.turn=null;C.round=0;afterTurn()};
+$('#cAuto').onclick=()=>{C.ents.forEach(e=>{if(e.st!=='dead')e.init=1+Math.floor(Math.random()*20);refreshCard(e)});renderCombat();saveNow()};
+$('#cOrder').addEventListener('click',ev=>{const r=ev.target.closest('[data-cid]');if(!r)return;if(!C.fight){C.fight=true;C.round=1}C.turn=r.dataset.cid;afterTurn()});
+
+/* ---------- Dés ---------- */
+function renderDice(){
+ const l=C.log[0];$('#dRes').textContent=l?l.tot:'—';$('#dRes').className=l?l.crit:'';
+ $('#dDet').textContent=l?`${l.txt} → [${l.r.join(', ')}]${l.m?(l.m>0?' +':' ')+l.m:''}`:'';
+ $('#dLog').innerHTML=C.log.map(x=>`<div class="log"><span>${x.txt} [${x.r.join(',')}]</span><b>${x.tot}</b></div>`).join('');
+}
+$$('[data-d]').forEach(b=>b.onclick=()=>{
+ const f=+b.dataset.d,n=clamp(Math.round(+$('#dN').value)||1,1,20),m=Math.round(+$('#dM').value)||0;
+ const r=Array.from({length:n},()=>1+Math.floor(Math.random()*f));
+ C.log.unshift({txt:`${n}d${f}${m?(m>0?'+':'')+m:''}`,r,m,tot:r.reduce((a,c)=>a+c,0)+m,crit:f===20&&n===1?(r[0]===20?'crit':r[0]===1?'fumble':''):''});
+ C.log.length=Math.min(C.log.length,30);renderDice();saveSoon();
+});
+$$('[data-tab]').forEach(b=>b.onclick=()=>{$$('[data-tab]').forEach(x=>x.classList.toggle('on',x===b));$$('.pane').forEach(p=>p.hidden=p.id!=='t'+b.dataset.tab)});
+
+/* ---------- Cartes ---------- */
+$('#mapSel').onchange=ev=>gotoMap(ev.target.value);
+$('#mapFile').onchange=async ev=>{
+ const f=ev.target.files[0];ev.target.value='';if(!f)return;
+ try{
+  const id=await storeImg(f),d=await imgSize(urls[id]),nm=f.name.replace(/\.[^.]+$/,'');
+  if(V.imgId){V=newMap(nm,id,d.w,d.h);C.maps.push(V);C.map=V.id;gatherPJ(true)}
+  else{V.imgId=id;V.w=d.w;V.h=d.h;if(/^Carte \d+$/.test(V.name))V.name=nm;C.ents.filter(e=>e.map===V.id).forEach(e=>{e.x=clamp(e.x,0,d.w);e.y=clamp(e.y,0,d.h)})}
+  renderTop();applyMap();renderList();renderTokens();fitView();saveNow();
+ }catch{alert('Carte illisible. Essaie un PNG, JPG ou WebP.')}
+};
+function gatherPJ(quiet){
+ C.ents.filter(e=>e.t==='pj').forEach((e,i)=>{e.map=V.id;e.x=clamp(V.w/2+(i%4-1.5)*V.cell*1.2,0,V.w);e.y=clamp(V.h/2+Math.floor(i/4)*V.cell*1.2,0,V.h)});
+ if(!quiet){renderList();renderTokens();saveNow()}
+}
+$('#gather').onclick=()=>gatherPJ();
+$('#mRen').onclick=()=>{const n=prompt('Nom de la carte :',V.name);if(n&&n.trim()){V.name=n.trim();renderTop();renderList();saveNow()}};
+$('#mDel').onclick=async()=>{
+ if(C.maps.length<2)return alert('Il faut garder au moins une carte.');
+ if(!confirm(`Supprimer la carte « ${V.name} » ? Ses personnages seront déplacés sur une autre carte.`))return;
+ const old=V;C.maps=C.maps.filter(m=>m!==old);const t=C.maps[0];
+ C.ents.forEach(e=>{if(e.map===old.id){e.map=t.id;e.x=clamp(e.x,0,t.w);e.y=clamp(e.y,0,t.h)}});
+ await delImg(old.imgId);renderList();gotoMap(t.id);saveNow();
+};
+$('#gridBtn').onclick=()=>{V.grid=!V.grid;applyMap();saveSoon()};
+$('#cell').onchange=ev=>{V.cell=clamp(Math.round(+ev.target.value)||70,20,300);applyMap();renderTokens();saveSoon()};
+$('#resetView').onclick=fitView;
+$('#plus').onclick=()=>{const r=$('#stage').getBoundingClientRect();zoomAt(r.width/2,r.height/2,1.2)};
+$('#minus').onclick=()=>{const r=$('#stage').getBoundingClientRect();zoomAt(r.width/2,r.height/2,1/1.2)};
+$('#full').onclick=()=>document.documentElement.requestFullscreen?.();
+const stage=$('#stage');
+stage.addEventListener('pointerdown',ev=>{if(ev.target.closest('.zoom'))return;pan={x:ev.clientX,y:ev.clientY,px:V.panX,py:V.panY};stage.classList.add('dragging');stage.setPointerCapture(ev.pointerId)});
+stage.addEventListener('pointermove',ev=>{if(!pan)return;V.panX=pan.px+ev.clientX-pan.x;V.panY=pan.py+ev.clientY-pan.y;applyView()});
+stage.addEventListener('pointerup',()=>{if(pan){pan=null;stage.classList.remove('dragging');saveSoon()}});
+stage.addEventListener('wheel',ev=>{ev.preventDefault();const r=stage.getBoundingClientRect();zoomAt(ev.clientX-r.left,ev.clientY-r.top,ev.deltaY<0?1.1:1/1.1)},{passive:false});
+
+/* ---------- Campagnes ---------- */
+$('#camp').onchange=async ev=>{await openCamp(ev.target.value,false);saveNow()};
+$('#cNew').onclick=async()=>{const n=prompt('Nom de la nouvelle campagne :','Campagne '+(D.camps.length+1));if(!n||!n.trim())return;const c=newCamp(n.trim());D.camps.push(c);await openCamp(c.id,true);saveNow()};
+$('#cRen').onclick=()=>{const n=prompt('Nom de la campagne :',C.name);if(n&&n.trim()){C.name=n.trim();renderTop();saveNow()}};
+$('#cDel').onclick=async()=>{
+ if(!confirm(`Supprimer définitivement la campagne « ${C.name} » (cartes, personnages, images) ?`))return;
+ const old=C;D.camps=D.camps.filter(c=>c!==old);if(!D.camps.length)D.camps.push(newCamp('Campagne 1'));
+ for(const id of imgIds(old))await delImg(id);await openCamp(D.camps[0].id,D.camps[0].maps.length===1&&!D.camps[0].maps[0].imgId);saveNow();
+};
+
+/* ---------- Nouveau personnage ---------- */
+function setType(t){
+ newType=t;$('#tPj').classList.toggle('on',t==='pj');$('#tEn').classList.toggle('on',t==='en');$('#qtyBox').hidden=t!=='en';
+ const d=t==='pj'?[40,20,14,6]:[15,0,12,6];['pHp','pMana','pCa','pMv'].forEach((id,i)=>$('#'+id).value=d[i]);
+}
+$('#tPj').onclick=()=>setType('pj');$('#tEn').onclick=()=>setType('en');
+$('#pImg').onchange=async ev=>{
+ const f=ev.target.files[0];ev.target.value='';if(!f)return;
+ try{pendingBlob=await makeTokenBlob(f);if(pendingURL)URL.revokeObjectURL(pendingURL);pendingURL=URL.createObjectURL(pendingBlob);$('#pPrev').src=pendingURL;$('#pPrev').style.display='block';$('#pImgText').textContent='Image prête · cliquer pour changer'}
+ catch{alert('Image illisible. Essaie un PNG, JPG ou WebP.')}
+};
+$('#add').onclick=async()=>{
+ const name=$('#pName').value.trim();if(!name){$('#pName').focus();return alert('Indique un nom.')}
+ const q=newType==='en'?clamp(Math.round(+$('#pQty').value)||1,1,20):1,r=stage.getBoundingClientRect(),g=k=>+$('#'+k).value;
+ for(let i=0;i<q;i++){
+  const o=((C.ents.length)%6)*V.cell*.5,hp=Math.max(1,g('pHp')||1);
+  const e={id:uid(),t:newType,name:q>1?`${name} ${i+1}`:name,imgId:null,hp,hpMax:hp,mana:g('pMana'),manaMax:g('pMana'),ca:g('pCa'),mv:g('pMv'),init:null,st:'ok',fx:[],map:V.id,
+   x:clamp((r.width/2-V.panX)/V.zoom+o,0,V.w),y:clamp((r.height/2-V.panY)/V.zoom+o,0,V.h)};
+  if(pendingBlob)e.imgId=await storeImg(pendingBlob);
+  fix(e);C.ents.push(e);
+ }
+ pendingBlob=null;if(pendingURL){URL.revokeObjectURL(pendingURL);pendingURL=null}
+ $('#pName').value='';$('#pPrev').style.display='none';$('#pImgText').textContent='🖼️ Choisir une image';
+ renderList();renderTokens();renderCombat();saveNow();
+};
+
+/* ---------- Export / import ---------- */
+const blobToData=b=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.readAsDataURL(b)});
+$('#exportBtn').onclick=async()=>{
+ const imgs={};for(const c of D.camps)for(const id of imgIds(c)){const b=await getImg(id);if(b)imgs[id]=await blobToData(b)}
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:3,D,imgs})],{type:'application/json'}));
+ a.download='battlemap-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+};
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=async ev=>{
+ const f=ev.target.files[0];ev.target.value='';if(!f)return;
+ try{
+  const o=JSON.parse(await f.text());if(!o.D||!o.D.camps)throw 0;
+  if(!confirm('Remplacer TOUTES les campagnes actuelles par cette sauvegarde ?'))return;
+  await wipeImages();for(const [id,d] of Object.entries(o.imgs||{}))await storeImg(await (await fetch(d)).blob(),id);
+  D=o.D;await openCamp(D.cur&&D.camps.find(c=>c.id===D.cur)?D.cur:D.camps[0].id,false);saveNow();
+ }catch{alert("Ce fichier n'est pas une sauvegarde valide.")}
+};
+
+/* ---------- Démarrage ---------- */
+function renderAll(){renderTop();applyMap();applyView();renderTokens();renderList();renderCombat();renderDice()}
+(async function init(){
+ D={camps:[newCamp('Campagne 1')]};let fit=true;
+ try{
+  db=await openDB();const d=await dbDo('kv','readonly',s=>s.get('data'));
+  if(d){D=d;fit=false}else{const o=await dbDo('kv','readonly',s=>s.get('state'));if(o){D.camps=[fromV2(o)];fit=false}}
+  navigator.storage?.persist?.();
+ }catch{setStatus('⚠ Stockage indisponible : rien ne sera sauvegardé',false)}
+ await openCamp(D.cur&&D.camps.find(c=>c.id===D.cur)?D.cur:D.camps[0].id,fit);
+ if(db)await saveNow();
+})();
+</script>
+</body>
+</html>
