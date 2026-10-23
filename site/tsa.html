@@ -3,12 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ma page - Les Loups du Game</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <h1>Ma page</h1>
-  <p>Bienvenue sur ma page de test, ajoutée par tsa.</p>
-  <a href="index.html">Retour à l'accueil</a>
-</body>
-</html>
+  <title>Archive - Les Loups du Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0707;
+      --panel: #120c0b;
+      --red: #c0261b;
+      --gold: #f5b400;
+      --cream: #f1e6d3;
+      --muted: #a89a8a;
+      --border: #3a2a22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Oswald', Arial, sans-serif;
+      line-height: 1.5;
+    }
+    body::before {
+      content: "";
+      display: block;
+      height: 8px;
+      background: repeating-linear-gradient(90deg, var(--red) 0 40px, transparent 40px 46px);
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 40px;
+      align-items: center;
+      padding: 60px 5vw;
+      background:
+        radial-gradient(circle at 70% 40%, rgba(120, 60, 200, .35), transparent 45%),
+        radial-gradient(circle at 85% 70%, rgba(0, 180, 200, .25), transparent 40%),
+        linear-gradient(180deg, #14090a, var(--bg));
+    }
+    .eyebrow {
+      font-size: .8rem;
+      letter-spacing: .3em;
+      color: var(--red);
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      line-height: .95;
+      letter-spacing: .04em;
+      margin: 14px 0 20px;
+    }
+    h1 span { display: block; color: var(--gold); }
+    .intro { max-width: 560px; color: var(--cream); opacity: .9; }
+    .logo { width: 90px; margin-bottom: 20px; }
+
+    .buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+    .btn {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: .12em;
+      text-decoration: none;
+      color: var(--cream);
+      padding: 12px 26px;
+      border: 2px solid var(--gold);
+      background: rgba(0, 0, 0, .5);
+      transition: .2s;
+    }
+    .btn:hover { background: rgba(245, 180, 0, .15); }
+    .btn.primary {
+      background: linear-gradient(180deg, #5a3208, #2a1604);
+      box-shadow: 0 0 18px rgba(245, 180, 0, .45);
+    }
