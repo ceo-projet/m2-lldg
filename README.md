@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Les Loups du Game
 
 Site de l'escape game d'Halloween organisé par l'association Les Loups du Game sur l'île du Frioul, à Marseille.
@@ -86,3 +87,7 @@ chaque message de commit, et une pull request relue avant toute fusion sur `main
 ## Équipe
 
 Chef de projet : ceo@beliink.fr – Chef de l'équipe Dev : samuel@beliink.fr
+=======
+# m2-lldg
+Projet les loups du game
+>>>>>>> c3a919ce7d96d38351d68d6f771fc4d7ffaace72
