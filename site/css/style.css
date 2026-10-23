@@ -117,3 +117,34 @@ th { color: var(--lune); background: var(--brume); }
   }
   .bouton.secondaire { margin: 12px 0 0; }
 }
+
+/* Page Faress */
+.hero-faress {
+  min-height: calc(100vh - 68px);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 48px 0 72px;
+  background:
+    radial-gradient(circle at 78% 22%, var(--lune) 0 42px, rgba(243, 233, 198, 0.14) 43px 78px, transparent 79px),
+    radial-gradient(ellipse at 50% 110%, rgba(232, 119, 46, 0.35), transparent 58%),
+    linear-gradient(180deg, #11141b, var(--nuit));
+}
+.hero-faress .nom {
+  margin: 0;
+  font-size: clamp(4.2rem, 16vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: var(--lune);
+  text-shadow: 0 0 40px rgba(232, 119, 46, 0.45);
+}
+.hero-faress .prenom { display: block; }
+.hero-faress .nom-famille {
+  display: block;
+  color: var(--citrouille);
+}
+.hero-faress .accroche {
+  margin: 28px auto 0;
+  max-width: 520px;
+}
