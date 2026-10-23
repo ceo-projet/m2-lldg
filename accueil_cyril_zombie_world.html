@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Je suis Cyril – Zombie Apocalypse</title>
+  <meta name="description" content="Bienvenue dans l'univers de Cyril : survie zombie, art ASCII et escape game d'Halloween.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & variables globales */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: rgba(22, 22, 30, 0.85);
+      --bg-card-border: rgba(57, 255, 20, 0.2);
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent-zombie: #39ff14; /* Vert néon zombie */
+      --accent-zombie-glow: rgba(57, 255, 20, 0.35);
+      --accent-blood: #ff3344;   /* Rouge sang */
+      --accent-blood-glow: rgba(255, 51, 68, 0.4);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Fira Code', 'Courier New', Courier, monospace;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(57, 255, 20, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(255, 51, 68, 0.05) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Utilitaires conteneur */
+    .conteneur {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* En-tête */
+    .entete {
+      background-color: rgba(10, 10, 15, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(57, 255, 20, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 0;
+    }
+
+    .entete .conteneur {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .marque {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.25rem;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .marque-icon {
+      color: var(--accent-zombie);
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 5px var(--accent-zombie-glow));
+    }
+
+    .nav {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+    }
+
+    .nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .nav a:hover,
+    .nav a[aria-current="page"] {
+      color: var(--accent-zombie);
+      text-shadow: 0 0 8px var(--accent-zombie-glow);
+    }
+
+    /* Hero Section (Bandeau) */
+    .bandeau {
+      padding: 4rem 0 3rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .bandeau-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (min-width: 850px) {
+      .bandeau-grid {
+        grid-template-columns: 1.2fr 0.8fr;
+        text-align: left;
+      }
+    }
+
+    .surtitre {
+      color: var(--accent-zombie);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(57, 255, 20, 0.1);
+      border-radius: 20px;
+      border: 1px solid rgba(57, 255, 20, 0.3);
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 .cyril-badge {
+      color: var(--accent-blood);
+      text-shadow: 0 0 15px var(--accent-blood-glow);
+      display: inline-block;
+    }
+
+    .accroche {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      max-width: 650px;
+    }
+
+    /* Boutons */
+    .actions-btn {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    @media (max-width: 849px) {
+      .actions-btn {
+        justify-content: center;
+      }
+    }
+
+    .bouton {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      background-color: var(--accent-zombie);
+      color: #000;
+      box-shadow: 0 0 15px var(--accent-zombie-glow);
+      transition: all 0.25s ease;
+      border: 1px solid var(--accent-zombie);
+      cursor: pointer;
+    }
+
+    .bouton:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px var(--accent-zombie);
+      background-color: #50ff30;
+    }
+
+    .bouton.secondaire {
+      background-color: transparent;
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: none;
+    }
+
+    .bouton.secondaire:hover {
+      border-color: var(--accent-blood);
+      color: var(--accent-blood);
+      box-shadow: 0 0 15px var(--accent-blood-glow);
+    }
+
+    /* ASCII Art Blocks */
+    .ascii-box {
+      background-color: #050508;
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .ascii-box.red-theme {
+      border-color: rgba(255, 51, 68, 0.3);
+    }
+
+    .ascii-art {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.15;
+      color: var(--accent-zombie);
+      text-shadow: 0 0 4px var(--accent-zombie-glow);
+      white-space: pre;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .ascii-art.red {
+      color: var(--accent-blood);
+      text-shadow: 0 0 4px var(--accent-blood-glow);
+    }
+
+    .ascii-title {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.25rem;
+    }
+
+    /* Section commune */
+    .section {
+      padding: 3.5rem 0;
+    }
+
+    .section-titre {
+      text-align: center;
+      font-size: 2rem;
+      color: #ffffff;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .section-titre::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--accent-zombie);
+      margin: 0.75rem auto 0;
+      border-radius: 2px;
+      box-shadow: 0 0 8px var(--accent-zombie-glow);
+    }
+
+    /* Grille de cartes */
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .carte {
+      background-color: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .carte:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-zombie);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px var(--accent-zombie-glow);
+    }
+
+    .chiffre {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-zombie);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      font-family: var(--font-mono);
+    }
+
+    .carte h3 {
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .carte p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Story Section */
+    .histoire-box {
+      background: linear-gradient(135deg, rgba(22, 22, 30, 0.9) 0%, rgba(10, 10, 15, 0.95) 100%);
+      border: 1px solid rgba(255, 51, 68, 0.25);
+      border-radius: 12px;
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    .histoire-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (min-width: 850px) {
+      .histoire-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .histoire-box p {
+      color: var(--text-main);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .highlight-blood {
+      color: var(--accent-blood);
+      font-weight: 700;
+    }
+
+    /* Footer */
+    .pied {
+      background-color: #050508;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2.5rem 0;
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .pied a {
+      color: var(--accent-zombie);
+      text-decoration: none;
+    }
+
+    .pied a:hover {
+      text-decoration: underline;
+    }
+
+    .pied-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- En-tête -->
+  <header class="entete">
+    <div class="conteneur">
+      <a class="marque" href="#">
+        <span class="marque-icon">☣</span> Cyril & Les Loups du Game
+      </a>
+      <nav aria-label="Navigation principale">
+        <ul class="nav">
+          <li><a href="#" aria-current="page">Accueil</a></li>
+          <li><a href="#zombies">ASCII Zombies</a></li>
+          <li><a href="#histoire">L'Histoire</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero / Bandeau -->
+    <section class="bandeau">
+      <div class="conteneur">
+        <div class="bandeau-grid">
+          <div>
+            <p class="surtitre">Escape game d'Halloween · Île du Frioul</p>
+            <h1><span class="cyril-badge">JE SUIS CYRIL.</span><br>Une nuit sur l'île.<br>Une seule sortie.</h1>
+            <p class="accroche">
+              Les 30 et 31 octobre, l'association Les Loups du Game et moi-même vous enfermons sur l'archipel du Frioul.
+              Survivez aux hordes de zombies en résolvant les énigmes du vieux fort avant le dernier bateau.
+            </p>
+            <div class="actions-btn">
+              <a class="bouton" href="#reserver">Réserver mon équipe</a>
+              <a class="bouton secondaire" href="#zombies">Voir les Zombies ASCII</a>
+            </div>
+          </div>
+
+          <!-- ASCII Art Hero -->
+          <div class="ascii-box">
+            <div class="ascii-title">
+              <span>SYSTEM_ALERT // ZOMBIE_INFECTED</span>
+              <span>ID: CYRIL-01</span>
+            </div>
+<pre class="ascii-art">
+         🧟 SURVIVOR DETECTED 🧟
+      .---.
+     /     \     
+    | () () |    [JE SUIS CYRIL]
+     \  ^  /     "IL EST TROP TARD..."
+      |||||
+    .--------.
+   /  |    |  \
+  /   |    |   \
+ /    |____|    \
+*    /      \    *
+    /        \
+   /_        _\
+  (  )      (  )
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grille d'infos / Aventure -->
+    <section class="section">
+      <div class="conteneur">
+        <h2 class="section-titre">L'Aventure en bref</h2>
+        <div class="grille">
+          <div class="carte">
+            <p class="chiffre">90 MIN</p>
+            <h3>Pour s'échapper</h3>
+            <p>Un parcours d'énigmes immersif en extérieur et dans les galeries sombres du fort gardé par des zombies.</p>
+          </div>
+          <div class="carte">
+            <p class="chiffre">4 À 6</p>
+            <h3>Joueurs par équipe</h3>
+            <p>Formez votre escouade de survivants entre amis ou collègues (dès 12 ans) sous les conseils de Cyril.</p>
+          </div>
+          <div class="carte">
+            <p class="chiffre">2 SOIRS</p>
+            <h3>30 et 31 Octobre</h3>
+            <p>Départs échelonnés sous haute tension de 18 h à 21 h depuis le Vieux-Port de Marseille.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery / ASCII Zombies Section -->
+    <section id="zombies" class="section">
+      <div class="conteneur">
+        <h2 class="section-titre">Laboratoire ASCII Zombies</h2>
+        <div class="grille">
+
+          <!-- Card ASCII 1 -->
+          <div class="ascii-box">
+            <div class="ascii-title">
+              <span>SUBJECT_01 // RUNNER</span>
+              <span>BIO-HAZARD</span>
+            </div>
+<pre class="ascii-art">
+       .---.
+      /     \
+     | ()  ()|  "CERVEAU...!"
+      \  __ /
+     /`-----'\
+    / /     \ \
+   / /|     |\ \
+  *  ||     ||  *
+     ||     ||
+    /  \   /  \
+   (___)   (___)
+</pre>
+          </div>
+
+          <!-- Card ASCII 2 -->
+          <div class="ascii-box red-theme">
+            <div class="ascii-title">
+              <span>SUBJECT_02 // CYRIL ZOMBIE</span>
+              <span>DANGER LEVEL: MAXIMUM</span>
+            </div>
+<pre class="ascii-art red">
+      ______
+     /      \
+    | X   X  |  [CYRIL INFECTÉ]
+    |   ||   |  "REJOINS LA MEUTE!"
+    |  ====  |
+     \______/
+      /|  |\
+     / |  | \
+    *  |  |  *
+      /    \
+     /      \
+    (___)(___)
+</pre>
+          </div>
+
+          <!-- Card ASCII 3 -->
+          <div class="ascii-box">
+            <div class="ascii-title">
+              <span>SUBJECT_03 // TANK ZOMBIE</span>
+              <span>WARNING</span>
+            </div>
+<pre class="ascii-art">
+     .-----------.
+    /  / \   / \  \
+   |  | O | | O |  |
+   |   \_/   \_/   |
+    \     ___     /
+     '---'   '---'
+    /             \
+   /  /|  ___  |\  \
+  |  | | |   | | |  |
+  |  | | |___| | |  |
+  (__) (_______) (__)
+</pre>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Histoire Section -->
+    <section id="histoire" class="section">
+      <div class="conteneur">
+        <div class="histoire-box">
+          <div class="histoire-grid">
+            <div>
+              <h2 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem;">La Légende du Fort</h2>
+              <p>
+                La légende veut qu'en 1720, au temps de la grande peste, l'île du Frioul ait servi de quarantaine.
+                Aujourd'hui, une expérience menée par <span class="highlight-blood">Cyril</span> a mal tourné dans les souterrains du fort.
+              </p>
+              <p>
+                Chaque nuit d'Halloween, les créatures déambulent sur la côte. Cette année, l'association <strong>Les Loups du Game</strong> a retrouvé le journal de bord : à vous de déchiffrer les indices avant que les infectés n'atteignent le dernier bateau.
+              </p>
+            </div>
+            
+            <div class="ascii-box red-theme">
+              <div class="ascii-title">
+                <span>TERMINAL_LOG // CYRIL_NOTE</span>
+                <span>OCT 31</span>
+              </div>
+<pre class="ascii-art red">
+ +--------------------------+
+ | LOG #804                 |
+ | "Je suis Cyril.          |
+ |  Si vous lisez ceci,     |
+ |  le virus est libéré.    |
+ |  Trouvez la clé du fort  |
+ |  avant minuit..."        |
+ +--------------------------+
+             \
+              \   (o.o)
+                   |=|
+                  /   \
+</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pied de page -->
+  <footer id="contact" class="pied">
+    <div class="conteneur pied-content">
+      <p>© 2026 <strong>Je suis Cyril</strong> × Les Loups du Game – Association culturelle, Marseille</p>
+      <p><a href="#">Retour en haut de page ↑</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
